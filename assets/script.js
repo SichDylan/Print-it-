@@ -17,5 +17,12 @@ const slides = [
 	}
 ]
 
-let arrow = document.querySelector("#banner .arrow");
-alert(arrow);
+const navsArrows = [document.querySelector("#banner .arrow_left") ,document.querySelector("#banner .arrow_right") ];
+
+function test(){
+alert(navsArrows.length);
+}
+
+navsArrows.forEach(function(nav){
+	nav.addEventListener('click', test);
+});
