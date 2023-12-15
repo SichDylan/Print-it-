@@ -25,6 +25,6 @@ alert(navsArrows.length);
 
 navsArrows.forEach(function(nav){
 	nav.addEventListener('click', test);
-})
+});
 
 
