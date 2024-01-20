@@ -23,75 +23,84 @@ const navsArrows = [arrow_left, arrow_right];
 
 let currentSlideIndex = 0;
 
-//#region Image/dot generation
-function addImgAndDot(slide, currentSlide) {
-
-	const newDot = document.createElement("span")
-	const newImg = document.createElement("img");
-	const banner = document.getElementById("banner");
-	const dotContainer = document.querySelector(".dots")
-
-	// s'occupe de la création de <img>
-	banner.appendChild(newImg);
-	newImg.src = slide.image;
-	newImg.classList.add("banner-img");	
-	newImg.setAttribute("alt", slide.tagLine);
-	newImg.style.opacity =0;
-
-	// s'occupe de la création de <span> pour les dot
-
-	dotContainer.appendChild(newDot);
-	newDot.classList.add("dot");
-
-	// start state
-	if (currentSlide === 0) {
-		newDot.classList.add("dot_selected");
-		newImg.style.opacity = 1;
-	}
-}
-
-// genere un point et une img pour chaque slide
-for (let i = 0; i < slides.length; i++) {
-	const slide = slides[i];
-	addImgAndDot(slide, i);
-}
-//#endregion
-
-
-function update() {
-    const dots = document.querySelectorAll(".dot");
-	const imgs = document.querySelectorAll(".banner-img");
-
-
-    dots.forEach(dot => dot.classList.remove("dot_selected"));
-    dots[currentSlideIndex].classList.add("dot_selected");
-
-	// on regarde sur chaque img si elle est selectionner/ pour la rendre invisible ou non
-	imgs.forEach((img, index) => {
-        if (index === currentSlideIndex) {
-            img.style.opacity = 1;  
-        } else {
-            img.style.opacity = 0;  
-        }
-    });
-}
-
-function arrowDirection(arrow) {
-	if (arrow === arrow_right) {
-		//augmente l'index de 1 , on utilise -> % slide.lenght pour ne jamais avoir a depasser la taille de l'array
-		currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-	} else {
-		// pareil , on soustrait de 1 , mais on rajoute la taille de l'array pour ne jamais avoir a etre en nombre négatif
-		currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
-	}
-        // update de la logique
-	update();
-}
-
 navsArrows.forEach(function (arrow) {
 	arrow.addEventListener('click', function () {
 		arrowDirection(arrow);
 	}
 	);
 })
+
+function arrowDirection(arrow) {
+
+	if (arrow === arrow_right) {
+		//augmente l'index de 1 , on utilise -> % slide.lenght pour ne jamais avoir a depasser la taille de l'array
+		currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+
+	} else {
+		// pareil , on soustrait de 1 , mais on rajoute la taille de l'array pour ne jamais avoir a etre en nombre négatif
+		currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
+	}
+        // update de la logique
+    update()
+}
+
+function update() {
+    const dots = document.querySelectorAll(".dot");
+	const imgs = document.querySelector(".banner-img");
+	const title = document.querySelector("#banner p");
+
+// on enleve les anciennes valeurs 
+	title.textContent = null;
+	dots.forEach(dot => dot.classList.remove("dot_selected"));
+
+//  et on passe les nouvelles 
+	imgs.src = slides[currentSlideIndex].image;
+	title.insertAdjacentHTML('beforeend',slides[currentSlideIndex].tagLine);
+    dots[currentSlideIndex].classList.add("dot_selected");
+}
+
+//#region Image/dot generation
+
+// on call la fonction pour generer une premiere fois les elements
+createNewSlide();
+function createNewSlide() {
+	const newImg = document.createElement("img");
+	const newTitle = document.createElement("p");
+	const banner = document.getElementById("banner");
+
+	// s'occupe de la création de <img>
+	banner.appendChild(newImg);
+	newImg.src = slides[currentSlideIndex].image;
+	newImg.classList.add("banner-img");	
+	newImg.setAttribute("alt", slides[currentSlideIndex].tagLine);
+	banner.appendChild(newTitle);
+	newTitle.insertAdjacentHTML('beforeend',slides[currentSlideIndex].tagLine);
+}
+
+
+
+// s'occupe de la création de <span> pour les dot pour chaque slides
+for (let index = 0; index < slides.length; index++) {
+	createNewDot(index)
+}
+function createNewDot(currentIndex){
+	let newDot = document.createElement("span");
+	const dotContainer = document.querySelector(".dots");
+	dotContainer.appendChild(newDot);
+	newDot.classList.add("dot");
+
+	if (currentIndex === 0) {
+		newDot.classList.add("dot_selected")
+	}
+}
+
+
+//#endregion
+
+
+
+
+
+
+
 
